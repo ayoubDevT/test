@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('phone');
             $table->string('cni');
             $table->string('cne');
-            $table->string('referral');
+            $table->string('referral')->nullable();
         });
     }
 
