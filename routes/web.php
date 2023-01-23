@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,20 +14,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('client.index');
-});
+
 
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\RegistrationController::class, 'show'])->name('dashboard');
-    Route::get('/dashboardFiltered', [App\Http\Controllers\RegistrationController::class, 'filter'])->name('filter');
+    Route::get('/dashboard', [RegistrationController::class, 'show'])->name('dashboard');
 });
 
 //client registration
-
-Route::get('form/{origin}', [App\Http\Controllers\RegistrationController::class, 'index'])->name('registration');
-Route::post('store/{origin}', [App\Http\Controllers\RegistrationController::class, 'store'])->name('registration.store');
+Route::get('/', [RegistrationController::class, 'index'])->name('index');
+Route::resource('registration', RegistrationController::class);

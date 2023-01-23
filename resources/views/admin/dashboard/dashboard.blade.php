@@ -8,13 +8,13 @@
                     <div class="card-body">
                         <h6 class="card-title">Registrations</h6>
                         <!-- form start-->
-                        <form action="{{ route('filter') }}" method="get" enctype="multipart/form-data">
-                            @csrf
+                        <form action="{{ route('dashboard') }}" method="get" enctype="multipart/form-data">
                             <div class="form-group">
                                 <label for="datePickerExample">Debut Date</label>
                                 <div class="input-group date datepicker" id="datePickerExample1">
-                                    <input type="text" class="form-control" name="debutDate" {!! $debutDate=='' ? ''
-                                        : ' value="' .$debutDate.'"' !!}><span class="input-group-addon"><i
+                                    <input type="text" class="form-control" name="debutDate" {!! $debutDate==''
+                                        ? ' value="' .now()->format('Y-m-d').'"'
+                                    : ' value="' .$debutDate.'"' !!}><span class="input-group-addon"><i
                                             data-feather="calendar"></i></span>
                                     @error('debutDate')
                                     <p class="text-red-500 text-xs ml-1">{{ $message }}</p>
@@ -24,8 +24,9 @@
                             <div class="form-group">
                                 <label for="datePickerExample">End Date</label>
                                 <div class="input-group date datepicker" id="datePickerExample">
-                                    <input type="text" class="form-control" name="endDate" {!! $endDate=='' ? ''
-                                        : ' value="' .$endDate.'"' !!}><span class="input-group-addon"><i
+                                    <input type="text" class="form-control" name="endDate" {!! $endDate=='' ? ' value="'
+                                        .now()->format('Y-m-d').'"'
+                                    : ' value="' .$endDate.'"' !!}><span class="input-group-addon"><i
                                             data-feather="calendar"></i></span>
                                     @error('endDate')
                                     <p class="text-red-500 text-xs ml-1">{{ $message }}</p>
@@ -104,6 +105,20 @@
     <script>
         var xdata = JSON.parse('{!! json_encode($referral) !!}')
         var ydata = JSON.parse('{!! json_encode($count) !!}')
+        var colors = []
+        for (let index = 0; index <= xdata.length; index++) {
+            if (xdata[index] == 'facebook') colors.push('#139BF6')
+            
+            else if (xdata[index] == 'instagram') colors.push('#FC0A61')
+
+            else if (xdata[index] == 'linkdin') colors.push('#0E68C3')
+
+            else colors.push('#FF0000')
+
+            }
+                
+        
+        console.log(colors)
     </script>
     <script src="{{ asset('assets/js/myChart.js') }}"></script>
 </x-layout>

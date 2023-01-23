@@ -5,9 +5,9 @@ var myBarChart = new Chart(ctx, {
         labels: xdata,
         datasets: [{
             label: "Registrations",
-            backgroundColor: "#4e73df",
+            backgroundColor: colors,
             hoverBackgroundColor: "#2e59d9",
-            borderColor: "#4e73df",
+            borderColor: colors,
             data: ydata,
         }],
     },
@@ -17,7 +17,7 @@ var myBarChart = new Chart(ctx, {
             yAxes: [{
                 ticks: {
                     beginAtZero: true,
-                    callback: function(value) {if (value % 1 === 0) {return value;}}
+                    callback: function (value) { if (value % 1 === 0) { return value; } }
                 }
 
             }]

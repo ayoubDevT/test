@@ -57,12 +57,5 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
-
-
-    </div>
+    </div>    
 </x-layoutClient>

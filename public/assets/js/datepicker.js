@@ -9,7 +9,7 @@ $(function() {
       todayHighlight: true,
       autoclose: true
     });
-    $('#datePickerExample').datepicker('setDate', today);
+    
   }
 });
 $(function() {
@@ -23,6 +23,6 @@ $(function() {
       todayHighlight: true,
       autoclose: true
     });
-    $('#datePickerExample1').datepicker('setDate', today);
+    
   }
 });

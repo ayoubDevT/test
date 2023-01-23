@@ -17502,4 +17502,13 @@ div.tagsinput {
 .rtl .wizard > .actions > ul > li {
   float: right; }
 
+  .center {
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+  }
+
+  .img-width {
+    width: 50%;
+  }
 /*# sourceMappingURL=../maps/demo_1/style.css.map */
