@@ -200,7 +200,7 @@ public function show(Request $request)
 
 <b>- Button clear is used for clearing all filters</b><br>
 
-<img src="https://github.com/ayoubDevT/test/blob/master/public/assets/images/readme/dashboadfiltred.png">
+<img src="https://github.com/ayoubDevT/test/blob/master/public/assets/images/readme/dashboardfiltred.png">
 
 ```php
 
