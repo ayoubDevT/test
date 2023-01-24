@@ -200,7 +200,7 @@ public function show(Request $request)
 
 <b>- Button clear is used for clearing all filters</b><br>
 
-<img src="https://github.com/ayoubDevT/test/blob/master/public/assets/images/readme/dashboadfiltered.png">
+<img src="https://github.com/ayoubDevT/test/blob/master/public/assets/images/readme/dashboadfiltred.png">
 
 ```php
 
@@ -229,6 +229,7 @@ public function show(Request $request)
 ```
 
 <b>- That's how I get filtered data for chart and datatable and then send it to the blade</b><br>
+
 
 ```php
 return view('admin.dashboard.dashboard', [
