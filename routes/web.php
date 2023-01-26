@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\RegistrationController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,9 +22,12 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified'
 ])->group(function () {
-    Route::get('/dashboard', [RegistrationController::class, 'show'])->name('dashboard');
+    Route::get('/', [RegistrationController::class, 'show'])->name('dashboard');
+    Route::resource('import', ImportController::class);
+    /*Route::get('import', [ImportController::class, 'index'])->name('import.index');
+    Route::post('/importing', [ImportController::class, 'store'])->name('import.store');*/
 });
 
 //client registration
-Route::get('/', [RegistrationController::class, 'index'])->name('index');
-Route::resource('registration', RegistrationController::class);
+/*Route::get('/', [RegistrationController::class, 'index'])->name('index');
+Route::resource('registration', RegistrationController::class);*/

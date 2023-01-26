@@ -31,6 +31,7 @@ class RegistrationFactory extends Factory
             'cni' => $this->faker->randomNumber(),
             'cne' => $this->faker->randomNumber(),
             'referral' => $this->faker->randomElement(['instagram', 'facebook', 'youtube', 'linkdin']),
+            'turnover' => $this->faker->randomFloat(2,200,300),
         ];
     }
 }

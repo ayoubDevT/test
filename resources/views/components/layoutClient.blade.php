@@ -70,7 +70,7 @@
   <!-- check if the user registred successfully -->
   @if(Session::get('alert') == 'set')
   <script>
-    alert('you registred successfully')
+    alert('you successfully registered ')
   </script>
   @php
   Illuminate\Support\Facades\Session::forget('alert');

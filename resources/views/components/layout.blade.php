@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/prismjs/themes/prism.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/jquery-tags-input/jquery.tagsinput.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/select2/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendors/dropify/dist/dropify.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css') }}">
 
     <!-- end plugin css for this page -->
@@ -49,11 +50,17 @@
             </div>
             <div class="sidebar-body">
                 <ul class="nav">
-                    <li class="nav-item nav-category">Pages</li>
+
                     <li class="nav-item">
                         <a href="{{ route('dashboard') }}" class="nav-link">
                             <i class="link-icon" data-feather="box"></i>
                             <span class="link-title">dashboard</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ route('import.index') }}" class="nav-link">
+                            <i class="link-icon" data-feather="upload-cloud"></i>
+                            <span class="link-title">Import Data</span>
                         </a>
                     </li>
 
@@ -201,36 +208,38 @@
             {{ $slot }}
 
 
-        
-    <!-- core:js -->
-    <script src="{{ asset('assets/vendors/core/core.js') }}"></script>
-    <!-- endinject -->
-    <!-- plugin js for this page -->
 
-    <script src="{{ asset('assets/vendors/jquery.flot/jquery.flot.js') }}"></script>
-    <script src="{{ asset('assets/vendors/jquery.flot/jquery.flot.resize.js') }}"></script>
-    <script src="{{ asset('assets/vendors/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
-    <script src="{{ asset('assets/vendors/datatables.net/jquery.dataTables.js') }}"></script>
-    <script src="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script>
-    <script src="{{ asset('assets/vendors/prismjs/prism.js') }}"></script>
-    <script src="{{ asset('assets/vendors/clipboard/clipboard.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/jquery-tags-input/jquery.tagsinput.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
-    <script src="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
-    <!-- end plugin js for this page -->
-    <!-- inject:js -->
-    <script src="{{ asset('assets/vendors/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/js/template.js') }}"></script>
-    <!-- endinject -->
-    <!-- custom js for this page -->
-    <script src="{{ asset('assets/js/sweet-alert.js') }}"></script>
-    <script src="{{ asset('assets/js/dropify.js') }}"></script>
-    <script src="{{ asset('assets/js/carousel.js') }}"></script>
-    <script src="{{ asset('assets/js/data-table.js') }}"></script>
-    <script src="{{ asset('assets/js/tags-input.js') }}"></script>
-    <script src="{{ asset('assets/js/select2.js') }}"></script>
-    <script src="{{ asset('assets/js/datepicker.js') }}"></script>
-    
+            <!-- core:js -->
+            <script src="{{ asset('assets/vendors/core/core.js') }}"></script>
+            <!-- endinject -->
+            <!-- plugin js for this page -->
+
+            <script src="{{ asset('assets/vendors/jquery.flot/jquery.flot.js') }}"></script>
+            <script src="{{ asset('assets/vendors/jquery.flot/jquery.flot.resize.js') }}"></script>
+            <script src="{{ asset('assets/vendors/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
+            <script src="{{ asset('assets/vendors/datatables.net/jquery.dataTables.js') }}"></script>
+            <script src="{{ asset('assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js') }}"></script>
+            <script src="{{ asset('assets/vendors/prismjs/prism.js') }}"></script>
+            <script src="{{ asset('assets/vendors/clipboard/clipboard.min.js') }}"></script>
+            <script src="{{ asset('assets/vendors/jquery-tags-input/jquery.tagsinput.min.js') }}"></script>
+            <script src="{{ asset('assets/vendors/select2/select2.min.js') }}"></script>
+            <script src="{{ asset('assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js') }}"></script>
+            <script src="{{ asset('assets/vendors/dropify/dist/dropify.min.js') }}"></script>
+
+            <!-- end plugin js for this page -->
+            <!-- inject:js -->
+            <script src="{{ asset('assets/vendors/feather-icons/feather.min.js') }}"></script>
+            <script src="{{ asset('assets/js/template.js') }}"></script>
+            <!-- endinject -->
+            <!-- custom js for this page -->
+            <script src="{{ asset('assets/js/sweet-alert.js') }}"></script>
+            <script src="{{ asset('assets/js/dropify.js') }}"></script>
+            <script src="{{ asset('assets/js/carousel.js') }}"></script>
+            <script src="{{ asset('assets/js/data-table.js') }}"></script>
+            <script src="{{ asset('assets/js/tags-input.js') }}"></script>
+            <script src="{{ asset('assets/js/select2.js') }}"></script>
+            <script src="{{ asset('assets/js/datepicker.js') }}"></script>
+
 
 
 </body>

@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('cni');
             $table->string('cne');
             $table->string('referral')->nullable();
+            $table->float('turnover')->nullable();
         });
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\RegistrationsImport;
+use Maatwebsite\Excel\Facades\Excel;
 use App\Models\registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,12 +40,15 @@ class RegistrationController extends Controller
         session(['alert' => 'set']);
 
         return back();
-
-        
     }
 
     public function show(Request $request)
     {
+
+        $referralTurnover = [];
+        $sum = [];
+        $referralRegistered = [];
+        $count = [];
 
         if (isset($request->sub)) {
             $request->validate([
@@ -54,9 +59,26 @@ class RegistrationController extends Controller
 
             $debutDate = $request->debutDate;
             $endDate = $request->endDate;
-            $referral = [];
-            $count = [];
 
+
+            //code of chart data with turnover
+            
+            $charts = DB::table('registrations')
+                ->select(DB::raw('referral,sum(turnover) as sum'))
+                ->whereDate('created_at', '>=', $debutDate)
+                ->whereDate('created_at', '<=', $endDate)
+                ->groupBy('referral')
+                ->get();
+
+
+            foreach ($charts as $chart) {
+                $referralTurnover[] = $chart->referral;
+                $sum[] = number_format((float)$chart->sum, 2, '.', '') ;
+            }
+            //end
+
+            //code of chart data with registrations
+            
             $charts = DB::table('registrations')
                 ->select(DB::raw('referral,count(*) as count'))
                 ->whereDate('created_at', '>=', $debutDate)
@@ -66,19 +88,37 @@ class RegistrationController extends Controller
 
 
             foreach ($charts as $chart) {
-                $referral[] = $chart->referral;
+                $referralRegistered[] = $chart->referral;
                 $count[] = $chart->count;
             }
+            //end
 
+            //code of datatable
             $registrations = registration::whereDate('created_at', '>=', $debutDate)
                 ->whereDate('created_at', '<=', $endDate)
                 ->get();
+            //end
         } else {
 
             $debutDate = '';
             $endDate = '';
-            $referral = [];
-            $count = [];
+
+            //code of chart data with turnover
+           
+            $charts = DB::table('registrations')
+                ->select(DB::raw('referral,sum(turnover) as sum'))
+                ->groupBy('referral')
+                ->get();
+
+
+            foreach ($charts as $chart) {
+                $referralTurnover[] = $chart->referral;
+                $sum[] = number_format((float)$chart->sum, 2, '.', '') ;
+            }
+            //end
+
+            //code of chart data with registrations
+            
             $charts = DB::table('registrations')
                 ->select(DB::raw('referral,count(*) as count'))
                 ->groupBy('referral')
@@ -86,18 +126,23 @@ class RegistrationController extends Controller
 
 
             foreach ($charts as $chart) {
-                $referral[] = $chart->referral;
+                $referralRegistered[] = $chart->referral;
                 $count[] = $chart->count;
             }
+            //end
 
+            //code of datatable
             $registrations = registration::paginate(15);
+            //end
         }
 
         return view('admin.dashboard.dashboard', [
             'registrations' => $registrations,
-            'referral' => $referral, 
-            'count' => $count, 
-            'debutDate' => $debutDate, 
+            'referralRegistered' => $referralRegistered,
+            'count' => $count,
+            'referralTurnover' => $referralTurnover,
+            'sum' => $sum,
+            'debutDate' => $debutDate,
             'endDate' => $endDate
         ]);
     }

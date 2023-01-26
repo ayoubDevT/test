@@ -40,7 +40,14 @@
                         </form>
                         <!-- form end-->
                         <!-- chart start-->
-                        <canvas id="myBarChart"></canvas>
+                        <div class="row">
+                            <div class="col-6">
+                                <canvas id="myBarChartRegistered"></canvas>
+                            </div>
+                            <div class="col-6">
+                                <canvas id="myBarChartTurnover"></canvas>
+                            </div>
+                        </div>
                         <!-- chart end-->
                     </div>
                 </div>
@@ -65,6 +72,7 @@
                                     <th>CNI</th>
                                     <th>CNE</th>
                                     <th>Referral</th>
+                                    <th>Turnover</th>
 
                                 </tr>
                             </thead>
@@ -76,11 +84,11 @@
                                 <tr>
                                     <td>{{ $registration->name }}</td>
                                     <td>{{ $registration->email }}</td>
-
                                     <td>{{ $registration->phone }}</td>
                                     <td>{{ $registration->cni }}</td>
                                     <td>{{ $registration->cne }}</td>
                                     <td>{{ $registration->referral }}</td>
+                                    <td>{{ $registration->turnover }}</td>
 
                                 </tr>
                                 @endforeach
@@ -103,22 +111,37 @@
     </div>
     <script src="{{ asset('assets/vendors/chartjs/Chart.min.js') }}"></script>
     <script>
-        var xdata = JSON.parse('{!! json_encode($referral) !!}')
-        var ydata = JSON.parse('{!! json_encode($count) !!}')
-        var colors = []
-        for (let index = 0; index <= xdata.length; index++) {
-            if (xdata[index] == 'facebook') colors.push('#139BF6')
+        //code for turnover chart
+        var xdataTurnover = JSON.parse('{!! json_encode($referralTurnover) !!}')
+        var ydataTurnover = JSON.parse('{!! json_encode($sum) !!}')
+        var colorsTurnover = []
+        for (let index = 0; index <= xdataTurnover.length; index++) {
+            if (xdataTurnover[index] == 'facebook') colorsTurnover.push('#139BF6')
             
-            else if (xdata[index] == 'instagram') colors.push('#FC0A61')
+            else if (xdataTurnover[index] == 'instagram') colorsTurnover.push('#FC0A61')
 
-            else if (xdata[index] == 'linkdin') colors.push('#0E68C3')
+            else if (xdataTurnover[index] == 'linkdin') colorsTurnover.push('#0E68C3')
 
-            else colors.push('#FF0000')
+            else colorsTurnover.push('#FF0000')
 
-            }
-                
-        
-        console.log(colors)
+        }
+        //end
+
+        //code for registration chart
+        var xdataRegistered = JSON.parse('{!! json_encode($referralRegistered) !!}')
+        var ydataRegistered = JSON.parse('{!! json_encode($count) !!}')
+        var colorsRegistered = []
+        for (let index = 0; index <= xdataRegistered.length; index++) {
+            if (xdataRegistered[index] == 'facebook') colorsRegistered.push('#139BF6')
+            
+            else if (xdataRegistered[index] == 'instagram') colorsRegistered.push('#FC0A61')
+
+            else if (xdataRegistered[index] == 'linkdin') colorsRegistered.push('#0E68C3')
+
+            else colorsRegistered.push('#FF0000')
+
+        }
+        //end                  
     </script>
     <script src="{{ asset('assets/js/myChart.js') }}"></script>
 </x-layout>
