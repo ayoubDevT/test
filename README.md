@@ -86,7 +86,7 @@ Route::middleware([
 
 <b>code I used for importing data from excel files :</b>
 
-<b> In C:\Users\ayoub\Desktop\test\app\Imports\RegistrationsImport.php</b>
+<b> In app\Imports\RegistrationsImport.php</b>
 
 ```php
 <?php
