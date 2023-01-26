@@ -6,6 +6,7 @@
 
 - **[laravel](https://laravel.com/)**
 - **[jetstream](https://jetstream.laravel.com/2.x/introduction.html)**
+- **[laravel excel](https://laravel-excel.com/)**
 - **[bootstrap](https://getbootstrap.com/)**
 - **[jQuery](https://jquery.com/)**
 
@@ -62,8 +63,86 @@ Route::middleware([
 Route::get('/', [RegistrationController::class, 'index'])->name('index');
 Route::resource('registration', RegistrationController::class);
 ```
+
+### Routes after adding excel
+
+```php
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified'
+])->group(function () {
+    Route::get('/', [RegistrationController::class, 'show'])->name('dashboard');
+    Route::resource('import', ImportController::class);
+});
+```
+
 1- routes in the middleware are for admin because he has to login for consulting the dashboard <br>
 2- login routes are not visible because I used jetstream to manage users
+
+### import data page for admin
+
+![Screenshot 2023-01-26 142828](https://user-images.githubusercontent.com/54582274/214847384-8bb8029b-e19f-48dc-8e77-cead3fea6ca1.png)
+
+<b>code I used for importing data from excel files :</b>
+
+<b> In app\Imports\RegistrationsImport.php</b>
+
+```php
+<?php
+
+namespace App\Imports;
+
+use App\Models\registration;
+use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+
+class RegistrationsImport implements ToModel, WithHeadingRow
+{
+    /**
+    * @param array $row
+    *
+    * @return \Illuminate\Database\Eloquent\Model|null
+    */
+    public function model(array $row)
+    {
+        return new registration([
+            'updated_at'=>$row['updated_at'],
+            'created_at'=> $row['created_at'],
+            'name' => $row['name'],
+            'email' => $row['email'],
+            'phone' => $row['phone'],
+            'cni' => $row['cni'],
+            'cne' => $row['cne'],
+            'referral' => $row['referral'],
+            'turnover' => $row['turnover'],
+        ]);
+    }
+}
+```
+<b> In the controller app\Http\Controllers\ImportController.php</b>
+
+```php
+public function store(Request $request)
+    {
+        $request->validate([
+            'import' => 'required',
+        ]);
+
+        Excel::import(new RegistrationsImport, request()->file('import'));
+        
+        return back()->with('success', 'setted');
+        
+    }
+    
+```
+
+<b> In the blade we have an input type file that accept only excel files</b>
+
+```html
+<input name="import" type="file" id="myDropify" class="border"
+       accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+```
 
 ### First page
 <img src="https://github.com/ayoubDevT/test/blob/master/public/assets/images/readme/index.png">
@@ -119,9 +198,19 @@ public function store(Request $request)
 
 <b>- This is the dashboard with datatable and a chart grouped by traffic to show data to the admin </b><br>
 
+### New Dashboard admin with additional Chart for Turnovers
+
+![screencapture-127-0-0-1-8000-2023-01-26-14_37_30](https://user-images.githubusercontent.com/54582274/214849493-2b98e2c3-c5bb-4e77-97ff-1257d5352da0.png)
+
+
 ```php
 public function show(Request $request)
     {
+
+        $referralTurnover = [];
+        $sum = [];
+        $referralRegistered = [];
+        $count = [];
 
         if (isset($request->sub)) {
             $request->validate([
@@ -132,9 +221,26 @@ public function show(Request $request)
 
             $debutDate = $request->debutDate;
             $endDate = $request->endDate;
-            $referral = [];
-            $count = [];
 
+
+            //code of chart data with turnover
+            
+            $charts = DB::table('registrations')
+                ->select(DB::raw('referral,sum(turnover) as sum'))
+                ->whereDate('created_at', '>=', $debutDate)
+                ->whereDate('created_at', '<=', $endDate)
+                ->groupBy('referral')
+                ->get();
+
+
+            foreach ($charts as $chart) {
+                $referralTurnover[] = $chart->referral;
+                $sum[] = number_format((float)$chart->sum, 2, '.', '') ;
+            }
+            //end
+
+            //code of chart data with registrations
+            
             $charts = DB::table('registrations')
                 ->select(DB::raw('referral,count(*) as count'))
                 ->whereDate('created_at', '>=', $debutDate)
@@ -144,19 +250,37 @@ public function show(Request $request)
 
 
             foreach ($charts as $chart) {
-                $referral[] = $chart->referral;
+                $referralRegistered[] = $chart->referral;
                 $count[] = $chart->count;
             }
+            //end
 
+            //code of datatable
             $registrations = registration::whereDate('created_at', '>=', $debutDate)
                 ->whereDate('created_at', '<=', $endDate)
                 ->get();
+            //end
         } else {
 
             $debutDate = '';
             $endDate = '';
-            $referral = [];
-            $count = [];
+
+            //code of chart data with turnover
+           
+            $charts = DB::table('registrations')
+                ->select(DB::raw('referral,sum(turnover) as sum'))
+                ->groupBy('referral')
+                ->get();
+
+
+            foreach ($charts as $chart) {
+                $referralTurnover[] = $chart->referral;
+                $sum[] = number_format((float)$chart->sum, 2, '.', '') ;
+            }
+            //end
+
+            //code of chart data with registrations
+            
             $charts = DB::table('registrations')
                 ->select(DB::raw('referral,count(*) as count'))
                 ->groupBy('referral')
@@ -164,18 +288,23 @@ public function show(Request $request)
 
 
             foreach ($charts as $chart) {
-                $referral[] = $chart->referral;
+                $referralRegistered[] = $chart->referral;
                 $count[] = $chart->count;
             }
+            //end
 
+            //code of datatable
             $registrations = registration::paginate(15);
+            //end
         }
 
         return view('admin.dashboard.dashboard', [
             'registrations' => $registrations,
-            'referral' => $referral, 
-            'count' => $count, 
-            'debutDate' => $debutDate, 
+            'referralRegistered' => $referralRegistered,
+            'count' => $count,
+            'referralTurnover' => $referralTurnover,
+            'sum' => $sum,
+            'debutDate' => $debutDate,
             'endDate' => $endDate
         ]);
     }
@@ -204,11 +333,40 @@ public function show(Request $request)
 
 ```php
 
+            $referralTurnover = [];
+        $sum = [];
+        $referralRegistered = [];
+        $count = [];
+
+        if (isset($request->sub)) {
+            $request->validate([
+                'debutDate' => 'required|before_or_equal:endDate',
+                'endDate' => 'required|after_or_equal:debutDate',
+
+            ]);
+
             $debutDate = $request->debutDate;
             $endDate = $request->endDate;
-            $referral = [];
-            $count = [];
 
+
+            //code of chart data with turnover
+            
+            $charts = DB::table('registrations')
+                ->select(DB::raw('referral,sum(turnover) as sum'))
+                ->whereDate('created_at', '>=', $debutDate)
+                ->whereDate('created_at', '<=', $endDate)
+                ->groupBy('referral')
+                ->get();
+
+
+            foreach ($charts as $chart) {
+                $referralTurnover[] = $chart->referral;
+                $sum[] = number_format((float)$chart->sum, 2, '.', '') ;
+            }
+            //end
+
+            //code of chart data with registrations
+            
             $charts = DB::table('registrations')
                 ->select(DB::raw('referral,count(*) as count'))
                 ->whereDate('created_at', '>=', $debutDate)
@@ -218,17 +376,20 @@ public function show(Request $request)
 
 
             foreach ($charts as $chart) {
-                $referral[] = $chart->referral;
+                $referralRegistered[] = $chart->referral;
                 $count[] = $chart->count;
             }
+            //end
 
+            //code of datatable
             $registrations = registration::whereDate('created_at', '>=', $debutDate)
                 ->whereDate('created_at', '<=', $endDate)
                 ->get();
+            //end
 
 ```
 
-<b>- That's how I get filtered data for chart and datatable and then send it to the blade</b><br>
+<b>- That's how I get filtered data for charts and datatable and then send it to the blade</b><br>
 
 
 ```php
@@ -248,36 +409,39 @@ return view('admin.dashboard.dashboard', [
 
 ```js
 
-        var xdata = JSON.parse('{!! json_encode($referral) !!}')
-        var ydata = JSON.parse('{!! json_encode($count) !!}')
-        var colors = []
-        for (let index = 0; index <= xdata.length; index++) {
-            if (xdata[index] == 'facebook') colors.push('#139BF6')
+        //code for registration chart
+        var xdataRegistered = JSON.parse('{!! json_encode($referralRegistered) !!}')
+        var ydataRegistered = JSON.parse('{!! json_encode($count) !!}')
+        var colorsRegistered = []
+        for (let index = 0; index <= xdataRegistered.length; index++) {
+            if (xdataRegistered[index] == 'facebook') colorsRegistered.push('#139BF6')
             
-            else if (xdata[index] == 'instagram') colors.push('#FC0A61')
+            else if (xdataRegistered[index] == 'instagram') colorsRegistered.push('#FC0A61')
 
-            else if (xdata[index] == 'linkdin') colors.push('#0E68C3')
+            else if (xdataRegistered[index] == 'linkdin') colorsRegistered.push('#0E68C3')
 
-            else colors.push('#FF0000')
+            else colorsRegistered.push('#FF0000')
 
-            }
+        }
+        //end
                 
         
         
 ```
 
 ```js
-var ctx = document.getElementById("myBarChart").getContext("2d");
-var myBarChart = new Chart(ctx, {
+var myBarChartRegistered = document.getElementById("myBarChartRegistered").getContext("2d");
+//code for turnover chart
+var myBarChartR = new Chart(myBarChartRegistered, {
     type: 'bar',
     data: {
-        labels: xdata,
+        labels: xdataRegistered,
         datasets: [{
-            label: "Registrations",
-            backgroundColor: colors,
+            label: "By registrations",
+            backgroundColor: colorsRegistered,
             hoverBackgroundColor: "#2e59d9",
-            borderColor: colors,
-            data: ydata,
+            borderColor: colorsRegistered,
+            data: ydataRegistered,
         }],
     },
     options: {
@@ -290,10 +454,20 @@ var myBarChart = new Chart(ctx, {
                 }
 
             }]
+        },
+        title:{
+            display:true,
+            text:'Registrations Chart',
+            fontSize:25
         }
 
     }
 });
+//end
 ```
+
+> **Note**
+> the registrations chart and turnovers chart have the same code in javaScript that's why I explain one 
+
 
 <h1 align="center">Thanks for reading</h1>
