@@ -402,6 +402,17 @@ return view('admin.dashboard.dashboard', [
         ]);
     }
 ```
+### Import data page
+
+![Screenshot 2023-01-27 102824](https://user-images.githubusercontent.com/54582274/215053402-74f3d75f-aa56-4026-8b2f-ebe75e2dfdbf.png)
+
+<b>- You are allowed to upload only excel extensions</b><br>
+
+![Screenshot 2023-01-27 102850](https://user-images.githubusercontent.com/54582274/215054003-f958de8c-7c5c-47e1-907f-c4cee15db12c.png)
+
+<b>- After you choose your file you have to click on import button and you get this message</b><br>
+
+![Screenshot 2023-01-27 103003](https://user-images.githubusercontent.com/54582274/215054284-877d986c-8c90-495e-a7fa-c131f1b957a1.png)
 
 ### chart
 
